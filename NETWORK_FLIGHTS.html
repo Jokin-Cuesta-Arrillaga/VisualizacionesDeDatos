@@ -1,0 +1,204 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 500px;
+            height: 500px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+        #loadingBar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width: 500px;
+            height: 500px;
+            background-color:rgba(200,200,200,0.8);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            opacity:1;
+        }
+
+        #bar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:20px;
+            height:20px;
+            margin:auto auto auto auto;
+            border-radius:11px;
+            border:2px solid rgba(30,30,30,0.05);
+            background: rgb(0, 173, 246); /* Old browsers */
+            box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+        }
+
+        #border {
+            position:absolute;
+            top:10px;
+            left:10px;
+            width:500px;
+            height:23px;
+            margin:auto auto auto auto;
+            box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+            border-radius:10px;
+        }
+
+        #text {
+            position:absolute;
+            top:8px;
+            left:530px;
+            width:30px;
+            height:50px;
+            margin:auto auto auto auto;
+            font-size:22px;
+            color: #000000;
+        }
+
+        div.outerBorder {
+            position:relative;
+            top:400px;
+            width:600px;
+            height:44px;
+            margin:auto auto auto auto;
+            border:8px solid rgba(0,0,0,0.1);
+            background: rgb(252,252,252); /* Old browsers */
+            background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+            border-radius:72px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+<div id="loadingBar">
+    <div class="outerBorder">
+        <div id="text">0%</div>
+        <div id="border">
+            <div id="bar"></div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"id": "JKF", "label": "JKF", "shape": "dot", "size": 10}, {"id": "LAX", "label": "LAX", "shape": "dot", "size": 10}, {"id": "SJU", "label": "SJU", "shape": "dot", "size": 10}, {"id": "TPA", "label": "TPA", "shape": "dot", "size": 10}, {"id": "IAD", "label": "IAD", "shape": "dot", "size": 10}, {"id": "ROC", "label": "ROC", "shape": "dot", "size": 10}, {"id": "BTV", "label": "BTV", "shape": "dot", "size": 10}, {"id": "FLL", "label": "FLL", "shape": "dot", "size": 10}, {"id": "SFO", "label": "SFO", "shape": "dot", "size": 10}, {"id": "DEN", "label": "DEN", "shape": "dot", "size": 10}, {"id": "CLT", "label": "CLT", "shape": "dot", "size": 10}, {"id": "LAS", "label": "LAS", "shape": "dot", "size": 10}, {"id": "PHL", "label": "PHL", "shape": "dot", "size": 10}, {"id": "DCA", "label": "DCA", "shape": "dot", "size": 10}, {"id": "JAX", "label": "JAX", "shape": "dot", "size": 10}, {"id": "HOU", "label": "HOU", "shape": "dot", "size": 10}, {"id": "ABQ", "label": "ABQ", "shape": "dot", "size": 10}, {"id": "BUF", "label": "BUF", "shape": "dot", "size": 10}, {"id": "EGE", "label": "EGE", "shape": "dot", "size": 10}, {"id": "AUS", "label": "AUS", "shape": "dot", "size": 10}, {"id": "STT", "label": "STT", "shape": "dot", "size": 10}, {"id": "MSY", "label": "MSY", "shape": "dot", "size": 10}, {"id": "IAH", "label": "IAH", "shape": "dot", "size": 10}, {"id": "RDU", "label": "RDU", "shape": "dot", "size": 10}, {"id": "IND", "label": "IND", "shape": "dot", "size": 10}, {"id": "DTW", "label": "DTW", "shape": "dot", "size": 10}, {"id": "SEA", "label": "SEA", "shape": "dot", "size": 10}, {"id": "RSW", "label": "RSW", "shape": "dot", "size": 10}, {"id": "MSP", "label": "MSP", "shape": "dot", "size": 10}, {"id": "BNA", "label": "BNA", "shape": "dot", "size": 10}, {"id": "BOS", "label": "BOS", "shape": "dot", "size": 10}, {"id": "BWI", "label": "BWI", "shape": "dot", "size": 10}, {"id": "SAT", "label": "SAT", "shape": "dot", "size": 10}, {"id": "ATL", "label": "ATL", "shape": "dot", "size": 10}, {"id": "MIA", "label": "MIA", "shape": "dot", "size": 10}, {"id": "BUR", "label": "BUR", "shape": "dot", "size": 10}, {"id": "SLC", "label": "SLC", "shape": "dot", "size": 10}, {"id": "ORD", "label": "ORD", "shape": "dot", "size": 10}, {"id": "CHS", "label": "CHS", "shape": "dot", "size": 10}, {"id": "PBI", "label": "PBI", "shape": "dot", "size": 10}, {"id": "PIT", "label": "PIT", "shape": "dot", "size": 10}, {"id": "PHX", "label": "PHX", "shape": "dot", "size": 10}, {"id": "MCO", "label": "MCO", "shape": "dot", "size": 10}, {"id": "OAK", "label": "OAK", "shape": "dot", "size": 10}, {"id": "CLE", "label": "CLE", "shape": "dot", "size": 10}, {"id": "LGB", "label": "LGB", "shape": "dot", "size": 10}, {"id": "SAN", "label": "SAN", "shape": "dot", "size": 10}, {"id": "SMF", "label": "SMF", "shape": "dot", "size": 10}, {"id": "CMH", "label": "CMH", "shape": "dot", "size": 10}, {"id": "RIC", "label": "RIC", "shape": "dot", "size": 10}, {"id": "CVG", "label": "CVG", "shape": "dot", "size": 10}, {"id": "SYR", "label": "SYR", "shape": "dot", "size": 10}, {"id": "SRQ", "label": "SRQ", "shape": "dot", "size": 10}, {"id": "PWM", "label": "PWM", "shape": "dot", "size": 10}, {"id": "DFW", "label": "DFW", "shape": "dot", "size": 10}, {"id": "ORF", "label": "ORF", "shape": "dot", "size": 10}, {"id": "ACK", "label": "ACK", "shape": "dot", "size": 10}, {"id": "SJC", "label": "SJC", "shape": "dot", "size": 10}, {"id": "BQN", "label": "BQN", "shape": "dot", "size": 10}, {"id": "MKE", "label": "MKE", "shape": "dot", "size": 10}, {"id": "HNL", "label": "HNL", "shape": "dot", "size": 10}, {"id": "PDX", "label": "PDX", "shape": "dot", "size": 10}, {"id": "PSE", "label": "PSE", "shape": "dot", "size": 10}, {"id": "MVY", "label": "MVY", "shape": "dot", "size": 10}, {"id": "MCI", "label": "MCI", "shape": "dot", "size": 10}, {"id": "PSP", "label": "PSP", "shape": "dot", "size": 10}, {"id": "SDF", "label": "SDF", "shape": "dot", "size": 10}, {"id": "EWR", "label": "EWR", "shape": "dot", "size": 10}, {"id": "LGA", "label": "LGA", "shape": "dot", "size": 10}, {"id": "MDW", "label": "MDW", "shape": "dot", "size": 10}, {"id": "STL", "label": "STL", "shape": "dot", "size": 10}, {"id": "CRW", "label": "CRW", "shape": "dot", "size": 10}, {"id": "XNA", "label": "XNA", "shape": "dot", "size": 10}, {"id": "MEM", "label": "MEM", "shape": "dot", "size": 10}, {"id": "CAK", "label": "CAK", "shape": "dot", "size": 10}, {"id": "TVC", "label": "TVC", "shape": "dot", "size": 10}, {"id": "SAV", "label": "SAV", "shape": "dot", "size": 10}, {"id": "GSO", "label": "GSO", "shape": "dot", "size": 10}, {"id": "BGR", "label": "BGR", "shape": "dot", "size": 10}, {"id": "TYS", "label": "TYS", "shape": "dot", "size": 10}, {"id": "GRR", "label": "GRR", "shape": "dot", "size": 10}, {"id": "DSM", "label": "DSM", "shape": "dot", "size": 10}, {"id": "OMA", "label": "OMA", "shape": "dot", "size": 10}, {"id": "MHT", "label": "MHT", "shape": "dot", "size": 10}, {"id": "BHM", "label": "BHM", "shape": "dot", "size": 10}, {"id": "DAY", "label": "DAY", "shape": "dot", "size": 10}, {"id": "ILM", "label": "ILM", "shape": "dot", "size": 10}, {"id": "MSN", "label": "MSN", "shape": "dot", "size": 10}, {"id": "GSP", "label": "GSP", "shape": "dot", "size": 10}, {"id": "CHO", "label": "CHO", "shape": "dot", "size": 10}, {"id": "EYW", "label": "EYW", "shape": "dot", "size": 10}, {"id": "AVL", "label": "AVL", "shape": "dot", "size": 10}, {"id": "CAE", "label": "CAE", "shape": "dot", "size": 10}, {"id": "SNA", "label": "SNA", "shape": "dot", "size": 10}, {"id": "TUL", "label": "TUL", "shape": "dot", "size": 10}, {"id": "JAC", "label": "JAC", "shape": "dot", "size": 10}, {"id": "ALB", "label": "ALB", "shape": "dot", "size": 10}, {"id": "BDL", "label": "BDL", "shape": "dot", "size": 10}, {"id": "OKC", "label": "OKC", "shape": "dot", "size": 10}, {"id": "PVD", "label": "PVD", "shape": "dot", "size": 10}, {"id": "MTJ", "label": "MTJ", "shape": "dot", "size": 10}, {"id": "HDN", "label": "HDN", "shape": "dot", "size": 10}, {"id": "BZN", "label": "BZN", "shape": "dot", "size": 10}, {"id": "ANC", "label": "ANC", "shape": "dot", "size": 10}, {"id": "MYR", "label": "MYR", "shape": "dot", "size": 10}]);
+        edges = new vis.DataSet([{"from": "JKF", "to": "LAX", "weight": 1115}, {"from": "JKF", "to": "SJU", "weight": 471}, {"from": "JKF", "to": "TPA", "weight": 314}, {"from": "JKF", "to": "IAD", "weight": 250}, {"from": "JKF", "to": "ROC", "weight": 154}, {"from": "JKF", "to": "BTV", "weight": 132}, {"from": "JKF", "to": "FLL", "weight": 424}, {"from": "JKF", "to": "SFO", "weight": 832}, {"from": "JKF", "to": "DEN", "weight": 81}, {"from": "JKF", "to": "CLT", "weight": 294}, {"from": "JKF", "to": "LAS", "weight": 392}, {"from": "JKF", "to": "PHL", "weight": 81}, {"from": "JKF", "to": "DCA", "weight": 317}, {"from": "JKF", "to": "JAX", "weight": 124}, {"from": "JKF", "to": "HOU", "weight": 84}, {"from": "JKF", "to": "ABQ", "weight": 22}, {"from": "JKF", "to": "BUF", "weight": 357}, {"from": "JKF", "to": "EGE", "weight": 10}, {"from": "JKF", "to": "AUS", "weight": 151}, {"from": "JKF", "to": "STT", "weight": 39}, {"from": "JKF", "to": "MSY", "weight": 152}, {"from": "JKF", "to": "IAH", "weight": 29}, {"from": "JKF", "to": "RDU", "weight": 300}, {"from": "JKF", "to": "IND", "weight": 67}, {"from": "JKF", "to": "DTW", "weight": 110}, {"from": "JKF", "to": "SEA", "weight": 204}, {"from": "JKF", "to": "RSW", "weight": 133}, {"from": "JKF", "to": "MSP", "weight": 113}, {"from": "JKF", "to": "BNA", "weight": 54}, {"from": "JKF", "to": "BOS", "weight": 585}, {"from": "JKF", "to": "BWI", "weight": 128}, {"from": "JKF", "to": "SAT", "weight": 35}, {"from": "JKF", "to": "ATL", "weight": 195}, {"from": "JKF", "to": "MIA", "weight": 344}, {"from": "JKF", "to": "BUR", "weight": 31}, {"from": "JKF", "to": "SLC", "weight": 212}, {"from": "JKF", "to": "ORD", "weight": 186}, {"from": "JKF", "to": "CHS", "weight": 110}, {"from": "JKF", "to": "PBI", "weight": 155}, {"from": "JKF", "to": "PIT", "weight": 131}, {"from": "JKF", "to": "PHX", "weight": 177}, {"from": "JKF", "to": "MCO", "weight": 529}, {"from": "JKF", "to": "OAK", "weight": 25}, {"from": "JKF", "to": "CLE", "weight": 62}, {"from": "JKF", "to": "LGB", "weight": 66}, {"from": "JKF", "to": "SAN", "weight": 148}, {"from": "JKF", "to": "SMF", "weight": 23}, {"from": "JKF", "to": "CMH", "weight": 72}, {"from": "JKF", "to": "RIC", "weight": 22}, {"from": "JKF", "to": "CVG", "weight": 81}, {"from": "JKF", "to": "SYR", "weight": 142}, {"from": "JKF", "to": "SRQ", "weight": 51}, {"from": "JKF", "to": "PWM", "weight": 124}, {"from": "JKF", "to": "DFW", "weight": 75}, {"from": "JKF", "to": "ORF", "weight": 63}, {"from": "JKF", "to": "ACK", "weight": 24}, {"from": "JKF", "to": "SJC", "weight": 33}, {"from": "JKF", "to": "BQN", "weight": 55}, {"from": "JKF", "to": "MKE", "weight": 15}, {"from": "JKF", "to": "HNL", "weight": 34}, {"from": "JKF", "to": "PDX", "weight": 77}, {"from": "JKF", "to": "PSE", "weight": 39}, {"from": "JKF", "to": "MVY", "weight": 16}, {"from": "JKF", "to": "MCI", "weight": 21}, {"from": "JKF", "to": "PSP", "weight": 2}, {"from": "JKF", "to": "SDF", "weight": 3}, {"from": "LAX", "to": "EWR", "weight": 468}, {"from": "SJU", "to": "EWR", "weight": 116}, {"from": "TPA", "to": "LGA", "weight": 198}, {"from": "TPA", "to": "EWR", "weight": 234}, {"from": "IAD", "to": "LGA", "weight": 166}, {"from": "IAD", "to": "EWR", "weight": 119}, {"from": "ROC", "to": "LGA", "weight": 21}, {"from": "ROC", "to": "EWR", "weight": 54}, {"from": "BTV", "to": "LGA", "weight": 33}, {"from": "BTV", "to": "EWR", "weight": 87}, {"from": "FLL", "to": "LGA", "weight": 397}, {"from": "FLL", "to": "EWR", "weight": 362}, {"from": "SFO", "to": "EWR", "weight": 513}, {"from": "DEN", "to": "LGA", "weight": 392}, {"from": "DEN", "to": "EWR", "weight": 263}, {"from": "CLT", "to": "LGA", "weight": 583}, {"from": "CLT", "to": "EWR", "weight": 506}, {"from": "LAS", "to": "EWR", "weight": 192}, {"from": "PHL", "to": "LGA", "weight": 59}, {"from": "DCA", "to": "LGA", "weight": 475}, {"from": "DCA", "to": "EWR", "weight": 171}, {"from": "JAX", "to": "LGA", "weight": 14}, {"from": "JAX", "to": "EWR", "weight": 108}, {"from": "HOU", "to": "LGA", "weight": 44}, {"from": "HOU", "to": "EWR", "weight": 93}, {"from": "BUF", "to": "LGA", "weight": 16}, {"from": "BUF", "to": "EWR", "weight": 115}, {"from": "EGE", "to": "EWR", "weight": 15}, {"from": "AUS", "to": "EWR", "weight": 94}, {"from": "STT", "to": "EWR", "weight": 16}, {"from": "MSY", "to": "LGA", "weight": 86}, {"from": "MSY", "to": "EWR", "weight": 105}, {"from": "IAH", "to": "LGA", "weight": 293}, {"from": "IAH", "to": "EWR", "weight": 407}, {"from": "RDU", "to": "LGA", "weight": 356}, {"from": "RDU", "to": "EWR", "weight": 145}, {"from": "IND", "to": "LGA", "weight": 12}, {"from": "IND", "to": "EWR", "weight": 137}, {"from": "DTW", "to": "LGA", "weight": 491}, {"from": "DTW", "to": "EWR", "weight": 288}, {"from": "SEA", "to": "EWR", "weight": 166}, {"from": "RSW", "to": "LGA", "weight": 66}, {"from": "RSW", "to": "EWR", "weight": 149}, {"from": "MSP", "to": "LGA", "weight": 358}, {"from": "MSP", "to": "EWR", "weight": 241}, {"from": "BNA", "to": "LGA", "weight": 296}, {"from": "BNA", "to": "EWR", "weight": 207}, {"from": "BOS", "to": "LGA", "weight": 376}, {"from": "BOS", "to": "EWR", "weight": 509}, {"from": "BWI", "to": "LGA", "weight": 2}, {"from": "BWI", "to": "EWR", "weight": 64}, {"from": "SAT", "to": "EWR", "weight": 30}, {"from": "ATL", "to": "LGA", "weight": 946}, {"from": "ATL", "to": "EWR", "weight": 512}, {"from": "MIA", "to": "LGA", "weight": 573}, {"from": "MIA", "to": "EWR", "weight": 303}, {"from": "SLC", "to": "EWR", "weight": 33}, {"from": "ORD", "to": "LGA", "weight": 801}, {"from": "ORD", "to": "EWR", "weight": 601}, {"from": "CHS", "to": "LGA", "weight": 48}, {"from": "CHS", "to": "EWR", "weight": 140}, {"from": "PBI", "to": "LGA", "weight": 245}, {"from": "PBI", "to": "EWR", "weight": 220}, {"from": "PIT", "to": "LGA", "weight": 109}, {"from": "PIT", "to": "EWR", "weight": 45}, {"from": "PHX", "to": "EWR", "weight": 279}, {"from": "MCO", "to": "LGA", "weight": 360}, {"from": "MCO", "to": "EWR", "weight": 487}, {"from": "CLE", "to": "LGA", "weight": 195}, {"from": "CLE", "to": "EWR", "weight": 158}, {"from": "SAN", "to": "EWR", "weight": 117}, {"from": "CMH", "to": "LGA", "weight": 193}, {"from": "CMH", "to": "EWR", "weight": 83}, {"from": "RIC", "to": "LGA", "weight": 48}, {"from": "RIC", "to": "EWR", "weight": 168}, {"from": "CVG", "to": "LGA", "weight": 28}, {"from": "CVG", "to": "EWR", "weight": 251}, {"from": "SYR", "to": "LGA", "weight": 23}, {"from": "SYR", "to": "EWR", "weight": 18}, {"from": "SRQ", "to": "LGA", "weight": 85}, {"from": "PWM", "to": "LGA", "weight": 26}, {"from": "PWM", "to": "EWR", "weight": 78}, {"from": "DFW", "to": "LGA", "weight": 470}, {"from": "DFW", "to": "EWR", "weight": 306}, {"from": "ORF", "to": "LGA", "weight": 22}, {"from": "ORF", "to": "EWR", "weight": 40}, {"from": "BQN", "to": "EWR", "weight": 30}, {"from": "MKE", "to": "LGA", "weight": 146}, {"from": "MKE", "to": "EWR", "weight": 110}, {"from": "HNL", "to": "EWR", "weight": 32}, {"from": "PDX", "to": "EWR", "weight": 59}, {"from": "MCI", "to": "LGA", "weight": 40}, {"from": "MCI", "to": "EWR", "weight": 140}, {"from": "SDF", "to": "LGA", "weight": 15}, {"from": "SDF", "to": "EWR", "weight": 79}, {"from": "LGA", "to": "MDW", "weight": 219}, {"from": "LGA", "to": "STL", "weight": 194}, {"from": "LGA", "to": "CRW", "weight": 12}, {"from": "LGA", "to": "XNA", "weight": 65}, {"from": "LGA", "to": "MEM", "weight": 85}, {"from": "LGA", "to": "CAK", "weight": 93}, {"from": "LGA", "to": "TVC", "weight": 5}, {"from": "LGA", "to": "SAV", "weight": 10}, {"from": "LGA", "to": "GSO", "weight": 50}, {"from": "LGA", "to": "BGR", "weight": 42}, {"from": "LGA", "to": "TYS", "weight": 39}, {"from": "LGA", "to": "GRR", "weight": 2}, {"from": "LGA", "to": "DSM", "weight": 9}, {"from": "LGA", "to": "OMA", "weight": 10}, {"from": "LGA", "to": "MHT", "weight": 10}, {"from": "LGA", "to": "BHM", "weight": 34}, {"from": "LGA", "to": "DAY", "weight": 33}, {"from": "LGA", "to": "ILM", "weight": 11}, {"from": "LGA", "to": "MSN", "weight": 21}, {"from": "LGA", "to": "GSP", "weight": 12}, {"from": "LGA", "to": "CHO", "weight": 1}, {"from": "LGA", "to": "EYW", "weight": 1}, {"from": "LGA", "to": "AVL", "weight": 1}, {"from": "LGA", "to": "CAE", "weight": 1}, {"from": "MDW", "to": "EWR", "weight": 218}, {"from": "STL", "to": "EWR", "weight": 236}, {"from": "XNA", "to": "EWR", "weight": 22}, {"from": "MEM", "to": "EWR", "weight": 90}, {"from": "TVC", "to": "EWR", "weight": 1}, {"from": "SAV", "to": "EWR", "weight": 77}, {"from": "GSO", "to": "EWR", "weight": 101}, {"from": "TYS", "to": "EWR", "weight": 29}, {"from": "GRR", "to": "EWR", "weight": 71}, {"from": "DSM", "to": "EWR", "weight": 28}, {"from": "OMA", "to": "EWR", "weight": 73}, {"from": "MHT", "to": "EWR", "weight": 66}, {"from": "DAY", "to": "EWR", "weight": 87}, {"from": "MSN", "to": "EWR", "weight": 34}, {"from": "GSP", "to": "EWR", "weight": 71}, {"from": "AVL", "to": "EWR", "weight": 25}, {"from": "CAE", "to": "EWR", "weight": 8}, {"from": "EWR", "to": "SNA", "weight": 75}, {"from": "EWR", "to": "TUL", "weight": 25}, {"from": "EWR", "to": "JAC", "weight": 2}, {"from": "EWR", "to": "ALB", "weight": 37}, {"from": "EWR", "to": "BDL", "weight": 49}, {"from": "EWR", "to": "OKC", "weight": 29}, {"from": "EWR", "to": "PVD", "weight": 43}, {"from": "EWR", "to": "MTJ", "weight": 2}, {"from": "EWR", "to": "HDN", "weight": 2}, {"from": "EWR", "to": "BZN", "weight": 2}, {"from": "EWR", "to": "ANC", "weight": 1}, {"from": "EWR", "to": "MYR", "weight": 4}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+        network.on("stabilizationProgress", function(params) {
+      		document.getElementById('loadingBar').removeAttribute("style");
+	        var maxWidth = 496;
+	        var minWidth = 20;
+	        var widthFactor = params.iterations/params.total;
+	        var width = Math.max(minWidth,maxWidth * widthFactor);
+
+	        document.getElementById('bar').style.width = width + 'px';
+	        document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+	    });
+	    network.once("stabilizationIterationsDone", function() {
+	        document.getElementById('text').innerHTML = '100%';
+	        document.getElementById('bar').style.width = '496px';
+	        document.getElementById('loadingBar').style.opacity = 0;
+	        // really clean the dom element
+	        setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+	    });
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
